@@ -28,6 +28,7 @@ class Task(Base):
     details: Mapped[str] = mapped_column(Text)
     topic: Mapped[str] = mapped_column(String(80))
     location: Mapped[str] = mapped_column(String(160), default='')
+    for_child: Mapped[str] = mapped_column(String(12), default='family')
     due: Mapped[str] = mapped_column(String(10))
     assignee: Mapped[str] = mapped_column(String(12))
     status: Mapped[str] = mapped_column(String(10))
