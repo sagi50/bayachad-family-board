@@ -81,7 +81,7 @@ def logout(request: Request, response: Response, user: User = Depends(require_wr
     return {'ok': True}
 
 def serialized(task: Task):
-    return {key: getattr(task, key) for key in ('id','title','details','topic','due','assignee','status','updated_at','updated_by','version')}
+    return {key: getattr(task, key) for key in ('id','title','details','topic','location','due','assignee','status','updated_at','updated_by','version')}
 
 @app.get('/api/tasks', tags=['tasks'])
 def tasks(user: User = Depends(current_user), db: Session = Depends(get_db)):
