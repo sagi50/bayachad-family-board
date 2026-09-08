@@ -3,15 +3,13 @@ from dataclasses import dataclass
 from pathlib import Path
 from sqlalchemy.engine import URL
 
-
 @dataclass(frozen=True)
 class Settings:
     environment: str
     origin: str
     cookie_secure: bool
     database_url: str | URL
-    session_seconds: int = 604800
-
+    session_seconds: int = 7200
 
 def settings() -> Settings:
     environment = os.getenv('APP_ENV', 'production')
@@ -40,4 +38,3 @@ def settings() -> Settings:
                                   host=os.getenv('DB_HOST', 'mysql'), port=3306,
                                   database=os.getenv('DB_NAME', 'bayachad'), query={'charset': 'utf8mb4'})
     return Settings(environment, origin, secure, database_url)
-
