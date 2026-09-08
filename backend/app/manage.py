@@ -26,13 +26,20 @@ def bootstrap():
         return
 
     if has_husband_secret:
+        encoded = path.read_text().strip() if path.exists() else password_hash(os.environ['INITIAL_PASSWORD'])
+        if not encoded.startswith('$argon2id$'):
+            raise ValueError('Initial password must be an Argon2id hash')
         with SessionLocal() as db:
-            husband_exists = db.scalar(select(User.id).where(User.slot == 'husband'))
-        if not husband_exists:
-            encoded = path.read_text().strip() if path.exists() else password_hash(os.environ['INITIAL_PASSWORD'])
-            if not encoded.startswith('$argon2id$'):
-                raise ValueError('Initial password must be an Argon2id hash')
-            create_user(os.getenv('INITIAL_USERNAME', 'SAGI HALILI'), os.getenv('INITIAL_DISPLAY_NAME', 'שגיא'), 'husband', encoded)
+            husband = db.scalar(select(User).where(User.slot == 'husband'))
+            if husband:
+                husband.username = os.getenv('INITIAL_USERNAME', husband.username).strip().casefold()
+                husband.password_hash = encoded
+                husband.failed_logins = 0
+                husband.locked_until = 0
+                db.execute(delete(LoginSession).where(LoginSession.user_id == husband.id))
+                db.commit()
+            else:
+                create_user(os.getenv('INITIAL_USERNAME', 'SAGI HALILI'), os.getenv('INITIAL_DISPLAY_NAME', 'שגיא'), 'husband', encoded)
 
     if has_wife_secret:
         with SessionLocal() as db:
@@ -61,6 +68,7 @@ def main():
             if not user:
                 raise ValueError('Unknown user')
             user.password_hash = encoded
+            user.failed_logins = 0
             user.failed_logins = 0
             user.locked_until = 0
             db.execute(delete(LoginSession).where(LoginSession.user_id == user.id))
