@@ -20,12 +20,12 @@ def create_user(username, display_name, slot, encoded):
 
 def bootstrap():
     path = Path(os.getenv('INITIAL_PASSWORD_HASH_FILE', '/run/secrets/initial_password_hash'))
-    if not path.exists():
+    if not path.exists() and not os.getenv('INITIAL_PASSWORD'):
         return
     with SessionLocal() as db:
         if db.scalar(select(User.id).where(User.slot == 'husband')):
             return
-    encoded = path.read_text().strip()
+    encoded = path.read_text().strip() if path.exists() else password_hash(os.environ['INITIAL_PASSWORD'])
     if not encoded.startswith('$argon2id$'):
         raise ValueError('Initial password must be an Argon2id hash')
     create_user(os.getenv('INITIAL_USERNAME', 'SAGI HALILI'), os.getenv('INITIAL_DISPLAY_NAME', 'שגיא'), 'husband', encoded)
@@ -59,3 +59,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
