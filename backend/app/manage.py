@@ -20,15 +20,25 @@ def create_user(username, display_name, slot, encoded):
 
 def bootstrap():
     path = Path(os.getenv('INITIAL_PASSWORD_HASH_FILE', '/run/secrets/initial_password_hash'))
-    if not path.exists() and not os.getenv('INITIAL_PASSWORD'):
+    has_husband_secret = path.exists() or bool(os.getenv('INITIAL_PASSWORD'))
+    has_wife_secret = bool(os.getenv('INITIAL_WIFE_USERNAME')) and bool(os.getenv('INITIAL_WIFE_PASSWORD'))
+    if not has_husband_secret and not has_wife_secret:
         return
-    with SessionLocal() as db:
-        if db.scalar(select(User.id).where(User.slot == 'husband')):
-            return
-    encoded = path.read_text().strip() if path.exists() else password_hash(os.environ['INITIAL_PASSWORD'])
-    if not encoded.startswith('$argon2id$'):
-        raise ValueError('Initial password must be an Argon2id hash')
-    create_user(os.getenv('INITIAL_USERNAME', 'SAGI HALILI'), os.getenv('INITIAL_DISPLAY_NAME', 'שגיא'), 'husband', encoded)
+
+    if has_husband_secret:
+        with SessionLocal() as db:
+            husband_exists = db.scalar(select(User.id).where(User.slot == 'husband'))
+        if not husband_exists:
+            encoded = path.read_text().strip() if path.exists() else password_hash(os.environ['INITIAL_PASSWORD'])
+            if not encoded.startswith('$argon2id$'):
+                raise ValueError('Initial password must be an Argon2id hash')
+            create_user(os.getenv('INITIAL_USERNAME', 'SAGI HALILI'), os.getenv('INITIAL_DISPLAY_NAME', 'שגיא'), 'husband', encoded)
+
+    if has_wife_secret:
+        with SessionLocal() as db:
+            wife_exists = db.scalar(select(User.id).where(User.slot == 'wife'))
+        if not wife_exists:
+            create_user(os.environ['INITIAL_WIFE_USERNAME'], os.getenv('INITIAL_WIFE_DISPLAY_NAME', 'מאיה'), 'wife', password_hash(os.environ['INITIAL_WIFE_PASSWORD']))
 
 def main():
     parser = argparse.ArgumentParser()
@@ -59,4 +69,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
