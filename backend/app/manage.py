@@ -42,10 +42,18 @@ def bootstrap():
                 create_user(os.getenv('INITIAL_USERNAME', 'SAGI HALILI'), os.getenv('INITIAL_DISPLAY_NAME', 'שגיא'), 'husband', encoded)
 
     if has_wife_secret:
+        encoded = password_hash(os.environ['INITIAL_WIFE_PASSWORD'])
         with SessionLocal() as db:
-            wife_exists = db.scalar(select(User.id).where(User.slot == 'wife'))
-        if not wife_exists:
-            create_user(os.environ['INITIAL_WIFE_USERNAME'], os.getenv('INITIAL_WIFE_DISPLAY_NAME', 'מאיה'), 'wife', password_hash(os.environ['INITIAL_WIFE_PASSWORD']))
+            wife = db.scalar(select(User).where(User.slot == 'wife'))
+            if wife:
+                wife.username = os.environ['INITIAL_WIFE_USERNAME'].strip().casefold()
+                wife.password_hash = encoded
+                wife.failed_logins = 0
+                wife.locked_until = 0
+                db.execute(delete(LoginSession).where(LoginSession.user_id == wife.id))
+                db.commit()
+            else:
+                create_user(os.environ['INITIAL_WIFE_USERNAME'], os.getenv('INITIAL_WIFE_DISPLAY_NAME', 'מאיה'), 'wife', encoded)
 
 def main():
     parser = argparse.ArgumentParser()
@@ -68,7 +76,6 @@ def main():
             if not user:
                 raise ValueError('Unknown user')
             user.password_hash = encoded
-            user.failed_logins = 0
             user.failed_logins = 0
             user.locked_until = 0
             db.execute(delete(LoginSession).where(LoginSession.user_id == user.id))
