@@ -1,0 +1,14 @@
+node_modules
+.git
+.secrets
+.env
+.env.*
+dist
+dist-web
+.wrangler
+.vinext
+work
+backups
+**/__pycache__
+**/.pytest_cache
+**/*.sqlite3

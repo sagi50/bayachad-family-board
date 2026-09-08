@@ -1,0 +1,70 @@
+name: bayachad
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: bayachad
+      MYSQL_USER: bayachad
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    secrets: [db_password, db_root_password]
+    volumes: [mysql_data:/var/lib/mysql]
+    networks: [database]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    logging: &logging
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+  api:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      mysql: {condition: service_healthy}
+    environment:
+      APP_ENV: development
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:8080}
+      COOKIE_SECURE: "false"
+      DB_HOST: mysql
+      DB_USER: bayachad
+      DB_NAME: bayachad
+      DB_PASSWORD_FILE: /run/secrets/db_password
+      INITIAL_PASSWORD_HASH_FILE: /run/secrets/initial_password_hash
+      INITIAL_USERNAME: ${INITIAL_USERNAME:-SAGI HALILI}
+      INITIAL_DISPLAY_NAME: ${INITIAL_DISPLAY_NAME:-שגיא}
+    secrets: [db_password, initial_password_hash]
+    networks: [web, database]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    logging: *logging
+    security_opt: [no-new-privileges:true]
+  nginx:
+    build:
+      context: .
+      dockerfile: deploy/nginx/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      api: {condition: service_healthy}
+    ports: ["127.0.0.1:8080:80"]
+    networks: [web]
+    logging: *logging
+    security_opt: [no-new-privileges:true]
+secrets:
+  db_password: {file: ./.secrets/db_password}
+  db_root_password: {file: ./.secrets/db_root_password}
+  initial_password_hash: {file: ./.secrets/initial_password_hash}
+volumes:
+  mysql_data:
+networks:
+  web:
+  database:
+    internal: true
