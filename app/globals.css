@@ -13,3 +13,15 @@
 @media(max-width:420px){.intro{align-items:flex-start;flex-direction:column;gap:18px}.intro>.primary{width:100%}.form-grid{grid-template-columns:1fr}.date-line{font-size:13px}.list-heading{align-items:flex-start;flex-direction:column;gap:4px}.board-heading{flex-wrap:wrap}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .login-shell{min-height:100dvh;display:grid;place-items:center;padding:28px;background:radial-gradient(ellipse at top right,#e6e3ff,transparent 65%),#f5f7fb}.login-card{width:min(440px,100%);background:white;padding:36px;border-radius:22px;border:1px solid var(--border);box-shadow:0 20px 65px #25204a0d}.login-card h1{font-size:28px;margin-top:28px;letter-spacing:-.8px}.login-card>p{color:var(--muted-foreground);margin:8px 0 28px}.login-card .primary{margin-top:25px;width:100%}.login-card .login-note{font-size:13px;text-align:center;margin:24px 0 0}.account-controls{max-width:1060px;margin:0 auto 24px;padding:0 20px;display:flex;gap:18px;align-items:center;justify-content:flex-end;font-size:14px;color:#697189}
+
+/* Warm family finish */
+:root{--background:#f7f1ea;--foreground:#2c211d;--primary:#a7653d;--card:#fffdf9;--border:#ead8c8}
+body{background:radial-gradient(circle at 10% 0%,#fffaf4,#f7f1ea 48%,#efe0d2);font-family:Arial,Helvetica,sans-serif}
+.masthead{background:rgba(255,252,248,.92);border-color:#ead8c8;box-shadow:0 8px 30px rgba(82,48,29,.06)}
+.calendar-card,.task-panel,.summary-card,.login-card{background:rgba(255,253,249,.9);border-color:#ead8c8;box-shadow:0 18px 50px rgba(82,48,29,.1);backdrop-filter:blur(14px)}
+.calendar-card{border-radius:26px}.task-panel{border-radius:24px}.summary-card{border-radius:18px;transition:transform .18s ease,box-shadow .18s ease}.summary-card:hover{transform:translateY(-2px);box-shadow:0 20px 44px rgba(82,48,29,.14)}
+.primary{background:linear-gradient(135deg,#a7653d,#c99452);box-shadow:0 10px 24px rgba(167,101,61,.25)}.primary:hover{background:#925735}
+.inbox{border-color:#ead8c8!important;background:#fffdf9!important;border-radius:18px!important}.inbox[data-active]{border-color:#c99452!important;background:#fff3e5!important;color:#8b542f!important}
+input,textarea,.form-select{background:rgba(255,255,255,.72)!important;border-color:#ead8c8!important;border-radius:14px!important}
+.calendar-day:hover,.calendar-day.selected{background:#fff0df;border-color:#c99452}
+.login-shell{background:radial-gradient(ellipse at top right,#f3d8c1,transparent 65%),#f7f1ea}
