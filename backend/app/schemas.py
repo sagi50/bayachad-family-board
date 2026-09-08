@@ -13,6 +13,7 @@ class TaskInput(BaseModel):
     details: str = Field(default='', max_length=10000)
     topic: str = Field(default='', max_length=80)
     location: str = Field(default='', max_length=160)
+    for_child: Literal['family', 'alma', 'liam'] = 'family'
     due: str = Field(default='', max_length=10)
     assignee: Literal['together', 'husband', 'wife'] = 'together'
     status: Literal['active', 'future', 'done'] = 'active'
