@@ -21,6 +21,7 @@ def settings() -> Settings:
         raise RuntimeError('Production requires HTTPS APP_ORIGIN and COOKIE_SECURE=true')
     test_url = os.getenv('TEST_DATABASE_URL')
     local_file = os.getenv('LOCAL_DATABASE_FILE')
+    external_url = os.getenv('DATABASE_URL')
     if test_url:
         if environment != 'test':
             raise RuntimeError('TEST_DATABASE_URL is restricted to test runs')
@@ -31,9 +32,12 @@ def settings() -> Settings:
         location = Path(local_file).resolve()
         location.parent.mkdir(parents=True, exist_ok=True)
         database_url = URL.create('sqlite', database=str(location))
+    elif external_url:
+        database_url = external_url.replace('postgres://', 'postgresql+psycopg://', 1).replace('postgresql://', 'postgresql+psycopg://', 1)
     else:
         password = Path(os.getenv('DB_PASSWORD_FILE', '/run/secrets/db_password')).read_text().strip()
         database_url = URL.create('mysql+pymysql', username=os.getenv('DB_USER', 'bayachad'), password=password,
                                   host=os.getenv('DB_HOST', 'mysql'), port=3306,
                                   database=os.getenv('DB_NAME', 'bayachad'), query={'charset': 'utf8mb4'})
     return Settings(environment, origin, secure, database_url)
+
