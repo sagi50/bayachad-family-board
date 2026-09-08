@@ -9,7 +9,7 @@ class Settings:
     origin: str
     cookie_secure: bool
     database_url: str | URL
-    session_seconds: int = 7200
+    session_seconds: int = 18000
 
 def settings() -> Settings:
     environment = os.getenv('APP_ENV', 'production')
