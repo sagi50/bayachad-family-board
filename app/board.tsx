@@ -1,4 +1,4 @@
-'use client';
+<SelectItem value="family">משפחה</SelectItem><SelectItem value="family">משפחה</SelectItem><SelectItem value="sagi">שגיא</SelectItem><SelectItem value="maya">מאיה</SelectItem>const childLabels={family:'משפחה',alma:'אלמה',liam:'ליאם'};const childLabels={family:'משפחה',sagi:'שגיא',maya:'מאיה',alma:'אלמה',liam:'ליאם'};'use client';
 import { useCallback, useEffect, useState } from 'react';
 import { HeartHandshake, Plus, ListTodo, Clock3, CheckCheck, CalendarDays, ChevronLeft, ChevronRight, MapPin, Pencil, Trash2, X, LockKeyhole, Check, LoaderCircle, RefreshCw, Tag, Users } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
