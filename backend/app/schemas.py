@@ -15,7 +15,7 @@ class TaskInput(BaseModel):
     location: str = Field(default='', max_length=160)
     for_child: Literal['family', 'alma', 'liam'] = 'family'
     due: str = Field(default='', max_length=10)
-    assignee: Literal['together', 'husband', 'wife'] = 'together'
+    assignee: Literal['together', 'husband', 'wife'] = 'together'Literal['family', 'alma', 'liam']Literal['family', 'sagi', 'maya', 'alma', 'liam']
     status: Literal['active', 'future', 'done'] = 'active'
 
     @field_validator('due')
