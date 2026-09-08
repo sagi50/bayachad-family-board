@@ -25,3 +25,12 @@ body{background:radial-gradient(circle at 10% 0%,#fffaf4,#f7f1ea 48%,#efe0d2);fo
 input,textarea,.form-select{background:rgba(255,255,255,.72)!important;border-color:#ead8c8!important;border-radius:14px!important}
 .calendar-day:hover,.calendar-day.selected{background:#fff0df;border-color:#c99452}
 .login-shell{background:radial-gradient(ellipse at top right,#f3d8c1,transparent 65%),#f7f1ea}
+
+/* Neutral brown palette */
+:root{--background:#fbf8f4;--foreground:#33261f;--primary:#8b5e3c;--card:#fffefa;--muted:#f2e8df;--muted-foreground:#78675b;--border:#e5d5c7}
+body{color:#33261f;background:#fbf8f4}
+.brand,.calendar-head h2,h1{color:#4a3326}.brand strong>span,h1 span{color:#8b5e3c}
+.brand-mark{background:#8b5e3c}.primary{background:#8b5e3c;box-shadow:0 8px 20px rgba(139,94,60,.22)}.primary:hover{background:#70472d}.secondary{color:#70472d;background:#f6ede5;border-color:#dfcbb9}.secondary:hover{background:#edddcf}
+.inbox[data-active]{border-color:#a87851!important;background:#f5e5d7!important;color:#70472d!important}.inbox-active .inbox-symbol{color:#8b5e3c;background:#f1dfcf}.inbox-future .inbox-symbol{color:#9a6a38;background:#f8ead7}.inbox-done .inbox-symbol{color:#4f8064;background:#e2efe6}
+.person{background:#f0e1d4;color:#70472d}.person-wife{background:#f4e0d5;color:#965d45}.person-together{background:#e4eee7;color:#4f8064}.empty-icon{background:#f0e1d4;color:#8b5e3c;box-shadow:0 0 0 10px #fbf5ef}.empty-future{background:#f8ead7;color:#9a6a38}.empty-done{background:#e2efe6;color:#4f8064}
+button:focus-visible,a:focus-visible{outline-color:#b88b68} .calendar-nav{color:#70472d}
