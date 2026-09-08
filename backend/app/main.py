@@ -6,6 +6,8 @@ from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from sqlalchemy import delete, select, text, update
 from sqlalchemy.orm import Session
 from .database import config, get_db
@@ -123,3 +125,8 @@ def openapi(user: User = Depends(current_user)):
 @app.get('/api/docs', include_in_schema=False)
 def docs(user: User = Depends(current_user)):
     return get_swagger_ui_html(openapi_url='/api/openapi.json', title='Bayachad API')
+
+frontend = Path(__file__).resolve().parents[2] / 'dist-web'
+if frontend.exists():
+    app.mount('/', StaticFiles(directory=frontend, html=True), name='frontend')
+
