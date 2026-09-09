@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { HeartHandshake, LockKeyhole, LoaderCircle } from 'lucide-react';
 import Board from './board';
-import ShoppingList from './shopping-list';
 import { apiFetch, setCsrfToken } from '@/lib/api';
 type AuthPayload = { csrf_token:string; user:string; slot:string; error?:string };
 
@@ -26,10 +25,6 @@ export default function SessionGate() {
     catch { setError('ההתנתקות לא הושלמה. נסו שוב.'); } finally { setBusy(false); }
   }
   if(!ready) return <div className="loading" role="status"><LoaderCircle className="spin"/> פותחים את הלוח…</div>;
-  if(loggedIn) {
-    const onShopping = window.location.pathname === '/shopping';
-    const page = onShopping ? <ShoppingList/> : <Board/>;
-    return <>{page}<div className="account-controls"><a href={onShopping?'/':'/shopping'}>{onShopping?'חזרה ללוח':'רשימת קניות'}</a><a href="/api/docs" target="_blank" rel="noreferrer">תיעוד API</a><button className="text-button" onClick={logout} disabled={busy}>התנתקות</button>{error && <span role="alert">{error}</span>}</div></>;
-  }
+  if(loggedIn) return <><Board/><div className="account-controls"><a href="/api/docs" target="_blank" rel="noreferrer">תיעוד API</a><button className="text-button" onClick={logout} disabled={busy}>התנתקות</button>{error && <span role="alert">{error}</span>}</div></>;
   return <main className="login-shell"><section className="login-card"><div className="brand"><span className="brand-mark"><HeartHandshake size={25}/></span><strong>משפחת חלילי<span>.</span></strong></div><h1>ברוכים הבאים הביתה</h1><p>נכנסים ללוח המשותף שלנו</p><form onSubmit={login}><label htmlFor="username">שם משתמש</label><input id="username" name="username" autoComplete="username" dir="auto" required maxLength={80} value={username} onChange={e=>setUsername(e.target.value)}/><label htmlFor="password">סיסמה</label><input id="password" name="password" type="password" autoComplete="current-password" dir="ltr" required maxLength={128} value={password} onChange={e=>setPassword(e.target.value)}/>{error&&<p className="form-error" role="alert">{error}</p>}<button className="primary" type="submit" disabled={busy}>{busy?<LoaderCircle className="spin" size={18}/>:<LockKeyhole size={18}/>} {busy?'נכנסים…':'כניסה ללוח'}</button></form><p className="login-note">מרחב פרטי לשנינו</p></section></main>;
 }
