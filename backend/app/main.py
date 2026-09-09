@@ -11,11 +11,11 @@ from pathlib import Path
 from sqlalchemy import delete, select, text, update
 from sqlalchemy.orm import Session
 from .database import config, get_db
-from .models import LoginSession, Task, User
-from .schemas import LoginInput, TaskEdit, TaskInput, TaskReference
+from .models import LoginSession, ShoppingItem, Task, User
+from .schemas import LoginInput, ShoppingItemEdit, ShoppingItemInput, ShoppingItemReference, TaskEdit, TaskInput, TaskReference
 from .security import COOKIE, DUMMY_HASH, csrf_token, current_user, hasher, require_origin, require_write, token_hash, verify_password
 
-app = FastAPI(title='ביחד — API', version='1.0.0', docs_url=None, redoc_url=None, openapi_url=None)
+app = FastAPI(title='ביחד — API', version='1.1.0', docs_url=None, redoc_url=None, openapi_url=None)
 
 @app.middleware('http')
 async def private_responses(request: Request, call_next):
@@ -36,7 +36,7 @@ async def http_error(request, exc):
 
 @app.exception_handler(RequestValidationError)
 async def validation_error(request, exc):
-    return JSONResponse({'error': 'פרטי הבקשה אינם תקינים. בדקו כותרת, מועד ושדות חובה.'}, 422)
+    return JSONResponse({'error': 'פרטי הבקשה אינם תקינים. בדקו את השדות ונסו שוב.'}, 422)
 
 @app.get('/api/health', tags=['health'])
 def health(db: Session = Depends(get_db)):
@@ -83,6 +83,9 @@ def logout(request: Request, response: Response, user: User = Depends(require_wr
 def serialized(task: Task):
     return {key: getattr(task, key) for key in ('id','title','details','topic','location','for_child','due','assignee','status','updated_at','updated_by','version')}
 
+def serialized_shopping(item: ShoppingItem):
+    return {key: getattr(item, key) for key in ('id','name','quantity','notes','status','updated_at','updated_by','version')}
+
 @app.get('/api/tasks', tags=['tasks'])
 def tasks(user: User = Depends(current_user), db: Session = Depends(get_db)):
     rows = db.scalars(select(Task).order_by(Task.due == '', Task.due, Task.updated_at.desc())).all()
@@ -96,7 +99,7 @@ def create_task(body: TaskInput, user: User = Depends(require_write), db: Sessio
     db.commit()
     return {'ok': True, 'id': task.id}
 
-CONFLICT = 'המשימה השתנתה או נמחקה מאז שפתחתם אותה. פתחו אותה מחדש. הטקסט שהקלדתם נשאר בחלון להעתקה.'
+CONFLICT = 'הפריט השתנה או נמחק מאז שפתחתם אותו. פתחו אותו מחדש.'
 
 @app.patch('/api/tasks', tags=['tasks'])
 def edit_task(body: TaskEdit, user: User = Depends(require_write), db: Session = Depends(get_db)):
@@ -118,6 +121,38 @@ def delete_task(body: TaskReference, user: User = Depends(require_write), db: Se
     db.commit()
     return {'ok': True}
 
+@app.get('/api/shopping', tags=['shopping'])
+def shopping(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    rows = db.scalars(select(ShoppingItem).order_by(ShoppingItem.status, ShoppingItem.updated_at.desc())).all()
+    return {'items': [serialized_shopping(item) for item in rows], 'user': user.display_name}
+
+@app.post('/api/shopping', status_code=201, tags=['shopping'])
+def create_shopping_item(body: ShoppingItemInput, user: User = Depends(require_write), db: Session = Depends(get_db)):
+    item = ShoppingItem(id=str(uuid4()), **body.model_dump(), updated_at=datetime.now(timezone.utc).isoformat(timespec='milliseconds'), updated_by=user.display_name, updated_user_id=user.id, version=1)
+    db.add(item)
+    db.commit()
+    return {'ok': True, 'id': item.id}
+
+@app.patch('/api/shopping', tags=['shopping'])
+def edit_shopping_item(body: ShoppingItemEdit, user: User = Depends(require_write), db: Session = Depends(get_db)):
+    values = body.model_dump(exclude={'id','version'})
+    values.update(updated_at=datetime.now(timezone.utc).isoformat(timespec='milliseconds'), updated_by=user.display_name, updated_user_id=user.id, version=body.version + 1)
+    result = db.execute(update(ShoppingItem).where(ShoppingItem.id == str(body.id), ShoppingItem.version == body.version).values(**values))
+    if result.rowcount != 1:
+        db.rollback()
+        raise HTTPException(409, CONFLICT)
+    db.commit()
+    return {'ok': True, 'id': str(body.id)}
+
+@app.delete('/api/shopping', tags=['shopping'])
+def delete_shopping_item(body: ShoppingItemReference, user: User = Depends(require_write), db: Session = Depends(get_db)):
+    result = db.execute(delete(ShoppingItem).where(ShoppingItem.id == str(body.id), ShoppingItem.version == body.version))
+    if result.rowcount != 1:
+        db.rollback()
+        raise HTTPException(409, CONFLICT)
+    db.commit()
+    return {'ok': True}
+
 @app.get('/api/openapi.json', include_in_schema=False)
 def openapi(user: User = Depends(current_user)):
     return app.openapi()
@@ -129,4 +164,3 @@ def docs(user: User = Depends(current_user)):
 frontend = Path(__file__).resolve().parents[2] / 'dist-web'
 if frontend.exists():
     app.mount('/', StaticFiles(directory=frontend, html=True), name='frontend')
-
