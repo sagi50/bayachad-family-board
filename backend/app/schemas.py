@@ -32,3 +32,18 @@ class TaskEdit(TaskInput):
 class TaskReference(BaseModel):
     id: UUID
     version: int = Field(ge=1)
+
+class ShoppingItemInput(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra='ignore')
+    name: str = Field(min_length=1, max_length=160)
+    quantity: str = Field(default='1', max_length=80)
+    notes: str = Field(default='', max_length=500)
+    status: Literal['now', 'future', 'done'] = 'now'
+
+class ShoppingItemEdit(ShoppingItemInput):
+    id: UUID
+    version: int = Field(ge=1)
+
+class ShoppingItemReference(BaseModel):
+    id: UUID
+    version: int = Field(ge=1)
