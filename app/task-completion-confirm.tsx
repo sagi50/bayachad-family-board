@@ -1,6 +1,5 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
-import { Check } from 'lucide-react';
 import { apiFetch } from '@/lib/api';
 import type { Task } from '@/lib/task-types';
 
@@ -26,17 +25,19 @@ export default function TaskCompletionConfirm(){
 
   useEffect(()=>{
     load();
-    const timer=setInterval(load,15000);
+    const timer=setInterval(load,30000);
     const focus=()=>load();
     window.addEventListener('focus',focus);
     return()=>{clearInterval(timer);window.removeEventListener('focus',focus)};
   },[load]);
 
   useEffect(()=>{
+    let frame=0;
     const wire=()=>{
+      frame=0;
       const used=new Set<string>();
       document.querySelectorAll<HTMLElement>('.task-card:not(.completed)').forEach(card=>{
-        const title=card.querySelector<HTMLElement>('.task-main h3')?.textContent?.trim();
+        const title=card.querySelector<HTMLElement>('.task-main h3')?.childNodes[0]?.textContent?.trim()||card.querySelector<HTMLElement>('.task-main h3')?.textContent?.trim();
         if(!title)return;
         const task=tasks.find(item=>item.status!=='done'&&item.title===title&&!used.has(item.id));
         if(!task)return;
@@ -49,17 +50,22 @@ export default function TaskCompletionConfirm(){
           button.type='button';
           button.className='completion-confirm-button';
           button.textContent='טופל';
-          const actions=card.querySelector<HTMLElement>('.task-actions');
-          actions?.prepend(button);
+          card.querySelector<HTMLElement>('.task-actions')?.prepend(button);
         }
         button.dataset.taskId=task.id;
         button.disabled=busy===task.id;
       });
     };
-    wire();
-    const observer=new MutationObserver(wire);
-    observer.observe(document.body,{childList:true,subtree:true});
-    return()=>observer.disconnect();
+    const schedule=()=>{
+      if(frame)return;
+      frame=requestAnimationFrame(wire);
+    };
+    schedule();
+    const root=document.querySelector<HTMLElement>('.board-tabs');
+    if(!root)return()=>{if(frame)cancelAnimationFrame(frame)};
+    const observer=new MutationObserver(schedule);
+    observer.observe(root,{childList:true,subtree:true});
+    return()=>{observer.disconnect();if(frame)cancelAnimationFrame(frame)};
   },[tasks,staged,busy]);
 
   useEffect(()=>{
@@ -112,6 +118,9 @@ export default function TaskCompletionConfirm(){
     .task-card.completion-staged .completion-confirm-button{display:inline-flex}
     .task-card.completion-staged .task-check{background:#2f9b68!important;border-color:#2f9b68!important;color:white!important;position:relative}
     .task-card.completion-staged .task-check::after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;color:white;font-size:16px;font-weight:900;line-height:1}
-    @media(max-width:760px){.task-card.completion-staged .task-actions{gap:4px}.task-card:not(.completed) .completion-confirm-button{width:auto;min-width:52px;height:31px;padding:5px 8px;font-size:12px}}
+    @media(max-width:760px){
+      .task-card.completion-staged .task-actions{gap:4px;align-items:center}
+      .task-card:not(.completed) .completion-confirm-button{width:auto;min-width:50px;height:30px;padding:5px 8px;font-size:12px}
+    }
   `}</style>;
 }
