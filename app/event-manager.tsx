@@ -69,22 +69,20 @@ export default function EventManager(){
       });
     }
 
-    document.querySelectorAll('.event-black-dot').forEach(node=>node.remove());
     const month=displayedMonth();
-    if(month){
-      const prefix=`${month.year}-${String(month.month).padStart(2,'0')}-`;
-      const dates=new Set(events.filter(item=>item.event_date.startsWith(prefix)).map(item=>item.event_date));
-      document.querySelectorAll<HTMLButtonElement>('.calendar-day').forEach(button=>{
-        const day=Number(button.querySelector('.calendar-number')?.textContent||'0');
-        const key=dateForDay(day);
-        if(key&&dates.has(key)){
-          const dot=document.createElement('span');
-          dot.className='event-black-dot';
-          dot.setAttribute('aria-label','יש אירוע');
-          button.appendChild(dot);
-        }
-      });
-    }
+    const dates=month?new Set(events.filter(item=>item.event_date.startsWith(`${month.year}-${String(month.month).padStart(2,'0')}-`)).map(item=>item.event_date)):new Set<string>();
+    document.querySelectorAll<HTMLButtonElement>('.calendar-day').forEach(button=>{
+      const day=Number(button.querySelector('.calendar-number')?.textContent||'0');
+      const key=dateForDay(day);
+      const existing=button.querySelector<HTMLElement>(':scope > .event-black-dot');
+      const shouldShow=!!key&&dates.has(key);
+      if(shouldShow&&!existing){
+        const dot=document.createElement('span');
+        dot.className='event-black-dot';
+        dot.setAttribute('aria-label','יש אירוע');
+        button.appendChild(dot);
+      }else if(!shouldShow&&existing){existing.remove();}
+    });
 
     const popover=document.querySelector<HTMLElement>('.day-popover');
     if(popover&&selectedDate){
