@@ -5,7 +5,7 @@ from uuid import uuid4
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from sqlalchemy import delete, select, text, update
@@ -162,5 +162,13 @@ def docs(user: User = Depends(current_user)):
     return get_swagger_ui_html(openapi_url='/api/openapi.json', title='Bayachad API')
 
 frontend = Path(__file__).resolve().parents[2] / 'dist-web'
+
+@app.get('/shopping', include_in_schema=False)
+def shopping_page():
+    index = frontend / 'index.html'
+    if not index.exists():
+        raise HTTPException(404, 'Frontend is not available')
+    return FileResponse(index)
+
 if frontend.exists():
     app.mount('/', StaticFiles(directory=frontend, html=True), name='frontend')
