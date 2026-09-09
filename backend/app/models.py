@@ -36,3 +36,16 @@ class Task(Base):
     updated_by: Mapped[str] = mapped_column(String(80))
     updated_user_id: Mapped[str] = mapped_column(ForeignKey('users.id'))
     version: Mapped[int] = mapped_column(Integer, default=1)
+
+class ShoppingItem(Base):
+    __tablename__ = 'shopping_items'
+    __table_args__ = (CheckConstraint("status IN ('now', 'future', 'done')", name='ck_shopping_status'),)
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    name: Mapped[str] = mapped_column(String(160))
+    quantity: Mapped[str] = mapped_column(String(80), default='1')
+    notes: Mapped[str] = mapped_column(String(500), default='')
+    status: Mapped[str] = mapped_column(String(10), default='now')
+    updated_at: Mapped[str] = mapped_column(String(32))
+    updated_by: Mapped[str] = mapped_column(String(80))
+    updated_user_id: Mapped[str] = mapped_column(ForeignKey('users.id'))
+    version: Mapped[int] = mapped_column(Integer, default=1)
