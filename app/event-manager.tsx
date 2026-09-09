@@ -58,14 +58,17 @@ export default function EventManager(){
     const introButton=document.querySelector<HTMLButtonElement>('.intro button.primary');
     if(introButton?.parentElement)setButtonHost(introButton.parentElement);
 
-    const tabs=document.querySelector<HTMLElement>('.board-tabs');
-    if(tabs){
-      let host=tabs.querySelector<HTMLElement>(':scope > .family-events-board-host');
-      if(!host){host=document.createElement('section');host.className='family-events-board-host';tabs.appendChild(host);}
+    const calendar=document.querySelector<HTMLElement>('.calendar-card');
+    if(calendar?.parentElement){
+      let host=calendar.parentElement.querySelector<HTMLElement>(':scope > .family-events-board-host');
+      if(!host){
+        host=document.createElement('section');
+        host.className='family-events-board-host';
+      }
+      if(calendar.nextSibling!==host) calendar.parentElement.insertBefore(host,calendar.nextSibling);
       setBoardHost(host);
     }
 
-    const calendar=document.querySelector<HTMLElement>('.calendar-card');
     if(calendar&&!calendar.dataset.eventsBound){
       calendar.dataset.eventsBound='1';
       calendar.addEventListener('click',(event)=>{
@@ -140,10 +143,10 @@ export default function EventManager(){
       .calendar-day{position:relative}.event-black-dot{position:absolute;width:7px;height:7px;border-radius:50%;background:#171717;left:7px;top:7px;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
       .family-events-day-host{margin-top:12px;padding-top:12px;border-top:1px solid #eadfd6}.family-events-day-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.family-events-day-title strong{display:flex;align-items:center;gap:6px}.family-events-day-title button{border:0;background:transparent;color:#7d4e2d;font:inherit;font-weight:700;cursor:pointer}
       .family-event-row{display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:9px;align-items:start;padding:11px 0;border-bottom:1px solid #eee7e1}.family-event-row:last-child{border-bottom:0}.family-event-owner{width:8px;height:8px;border-radius:50%;margin-top:6px}.family-event-owner.sagi{background:#55ad73}.family-event-owner.maya{background:#dc7da1}.family-event-main{min-width:0}.family-event-main strong{display:block;color:#33261f;font-size:14px}.family-event-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;color:#7d8498;font-size:12px}.family-event-meta span{display:flex;align-items:center;gap:3px}.family-event-actions{display:flex;gap:2px}.family-event-actions button{width:30px;height:30px;border:0;background:transparent;border-radius:8px;display:grid;place-items:center;color:#75665b;cursor:pointer}.family-event-actions button.danger{color:#b54e46}.family-event-actions button:hover{background:#f5eadf}.family-events-empty{font-size:13px;color:#8a8f9d;padding:18px 0;text-align:center}
-      .board-tabs>.family-events-board-host{grid-column:1/-1;min-width:0;width:100%}.family-events-board-card{width:100%;border:1px solid #ead8c8;border-radius:24px;background:#fffdf9;overflow:hidden;box-shadow:0 12px 35px rgba(84,55,35,.05)}.family-events-board-head{padding:20px 20px 15px;border-bottom:1px solid #eee3da;display:flex;align-items:center;justify-content:space-between;gap:10px}.family-events-board-head h2{margin:0;font-size:22px;color:#33261f;display:flex;align-items:center;gap:8px}.family-events-board-head span{font-size:13px;color:#7d8498}.family-events-board-list{padding:0 14px 10px}.family-events-board-legend{display:flex;align-items:center;gap:12px;padding:9px 18px;border-bottom:1px solid #eee7e1;color:#7d8498;font-size:12px}.family-events-board-legend span{display:flex;align-items:center;gap:5px}.family-events-board-legend i{width:8px;height:8px;border-radius:50%;display:inline-block}.family-events-board-legend .sagi{background:#55ad73}.family-events-board-legend .maya{background:#dc7da1}
+      .family-events-board-host{width:100%;min-width:0;margin:-8px 0 22px}.family-events-board-card{width:100%;border:1px solid #ead8c8;border-radius:24px;background:#fffdf9;overflow:hidden;box-shadow:0 12px 35px rgba(84,55,35,.05)}.family-events-board-head{padding:20px 20px 15px;border-bottom:1px solid #eee3da;display:flex;align-items:center;justify-content:space-between;gap:10px}.family-events-board-head h2{margin:0;font-size:22px;color:#33261f;display:flex;align-items:center;gap:8px}.family-events-board-head span{font-size:13px;color:#7d8498}.family-events-board-list{padding:0 14px 10px}.family-events-board-legend{display:flex;align-items:center;gap:12px;padding:9px 18px;border-bottom:1px solid #eee7e1;color:#7d8498;font-size:12px}.family-events-board-legend span{display:flex;align-items:center;gap:5px}.family-events-board-legend i{width:8px;height:8px;border-radius:50%;display:inline-block}.family-events-board-legend .sagi{background:#55ad73}.family-events-board-legend .maya{background:#dc7da1}
       @media(max-width:760px){
         .event-black-dot{width:6px;height:6px;left:5px;top:5px}.family-event-row{grid-template-columns:7px minmax(0,1fr) auto;gap:7px}.family-event-meta{gap:5px;font-size:11px}
-        .board-tabs>.family-events-board-host{grid-column:1!important;grid-row:auto!important;width:100%!important;max-width:100%!important}.family-events-board-card{border-radius:18px}.family-events-board-head{padding:16px 14px 12px}.family-events-board-head h2{font-size:20px}.family-events-board-head>span{font-size:12px}.family-events-board-list{padding:0 10px 8px}
+        .family-events-board-host{width:100%!important;max-width:100%!important;margin:-4px 0 18px}.family-events-board-card{border-radius:18px}.family-events-board-head{padding:16px 14px 12px}.family-events-board-head h2{font-size:20px}.family-events-board-head>span{font-size:12px}.family-events-board-list{padding:0 10px 8px}
         .task-panel{min-height:0!important;height:auto!important}.task-panel .empty-state{padding:28px 16px 32px!important;gap:14px!important}.task-panel .empty-icon{width:58px!important;height:58px!important;border-radius:18px!important;box-shadow:0 0 0 7px #f8f7ff!important}.task-panel [data-slot=empty-title]{font-size:18px!important}.task-panel [data-slot=empty-description]{font-size:14px!important;line-height:1.5!important}.task-panel .loading{padding:42px 18px!important}
       }
       @media(max-width:420px){.family-events-board-head>span{display:none}.family-events-board-legend{padding:8px 12px}.family-event-meta{line-height:1.35}}
