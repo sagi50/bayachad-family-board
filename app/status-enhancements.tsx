@@ -62,6 +62,19 @@ export default function StatusEnhancements(){
     .completed-badge{display:inline-flex;align-items:center;justify-content:center;padding:3px 8px;border-radius:999px;background:#e1f6ec;color:#208266;font-size:12px;font-weight:800;line-height:1.2;text-decoration:none!important;white-space:nowrap}
     .past-event-row{opacity:.7}
     .past-event-badge{display:inline-flex;align-items:center;justify-content:center;margin-inline-start:7px;padding:2px 7px;border-radius:999px;background:#ece8e4;color:#75665b;font-size:11px;font-weight:800;line-height:1.2;vertical-align:middle}
-    @media(max-width:560px){.completed-badge{font-size:11px;padding:3px 7px}.past-event-badge{font-size:10px;padding:2px 6px}}
+    @media(max-width:560px){
+      .completed-badge{font-size:11px;padding:3px 7px}.past-event-badge{font-size:10px;padding:2px 6px}
+      .intro>div:last-child{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;width:100%!important;align-items:stretch!important}
+      .intro>div:last-child>.primary,.intro>div:last-child>.secondary{width:100%!important;min-width:0!important;min-height:48px!important;height:48px!important;padding:8px 5px!important;border-radius:12px!important;font-size:12px!important;line-height:1.15!important;gap:5px!important;white-space:nowrap!important;box-shadow:none!important}
+      .intro>div:last-child>.primary svg,.intro>div:last-child>.secondary svg{width:16px!important;height:16px!important;flex:0 0 16px!important}
+      .intro>div:last-child>.secondary{background:#fffaf5!important;border-color:#e4d4c5!important;color:#795033!important}
+      .intro>div:last-child>.primary{background:#8a5a38!important;border-color:#8a5a38!important;color:#fff!important}
+      .intro>div:last-child>a[href="/shopping"]{display:none!important}
+    }
+    @media(max-width:380px){
+      .intro>div:last-child{gap:5px!important}
+      .intro>div:last-child>.primary,.intro>div:last-child>.secondary{font-size:11px!important;padding:7px 3px!important;gap:3px!important}
+      .intro>div:last-child>.primary svg,.intro>div:last-child>.secondary svg{width:15px!important;height:15px!important;flex-basis:15px!important}
+    }
   `}</style>;
 }
