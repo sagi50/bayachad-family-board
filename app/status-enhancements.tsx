@@ -85,15 +85,33 @@ export default function StatusEnhancements(){
     .past-event-badge{display:inline-flex;align-items:center;justify-content:center;margin-inline-start:7px;padding:2px 7px;border-radius:999px;background:#ece8e4;color:#75665b;font-size:11px;font-weight:800;line-height:1.2;vertical-align:middle}
     .board-tabs>.summary-strip{grid-column:1/-1!important;width:100%!important;margin:0!important;order:0!important}
 
+    .intro>div:last-child>.primary,
+    .intro>div:last-child>.secondary{
+      background:#8a5a38!important;
+      border-color:#8a5a38!important;
+      color:#fff!important;
+      box-shadow:none!important;
+    }
+    .intro>div:last-child>.primary:hover,
+    .intro>div:last-child>.secondary:hover{
+      background:#75492f!important;
+      border-color:#75492f!important;
+      color:#fff!important;
+    }
+    .intro>div:last-child>.primary svg,
+    .intro>div:last-child>.secondary svg{
+      display:block!important;
+      color:#fff!important;
+      stroke-width:2.5!important;
+    }
+
     @media(max-width:760px){
       .workspace{padding-left:16px!important;padding-right:16px!important}
       .intro{display:block!important;margin-bottom:22px!important}
       .intro>div:first-child{margin-bottom:16px!important}
       .intro>div:last-child{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important;align-items:stretch!important}
-      .intro>div:last-child>.primary,.intro>div:last-child>.secondary{width:100%!important;min-width:0!important;max-width:none!important;min-height:46px!important;height:46px!important;padding:7px 6px!important;border-radius:11px!important;font-size:12px!important;line-height:1!important;gap:5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important;box-shadow:none!important}
-      .intro>div:last-child>.primary svg,.intro>div:last-child>.secondary svg{width:15px!important;height:15px!important;flex:0 0 15px!important}
-      .intro>div:last-child>.secondary{background:#fffaf5!important;border-color:#e4d4c5!important;color:#795033!important}
-      .intro>div:last-child>.primary{background:#8a5a38!important;border-color:#8a5a38!important;color:#fff!important}
+      .intro>div:last-child>.primary,.intro>div:last-child>.secondary{width:100%!important;min-width:0!important;max-width:none!important;min-height:46px!important;height:46px!important;padding:7px 6px!important;border-radius:11px!important;font-size:12px!important;line-height:1!important;gap:5px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:clip!important}
+      .intro>div:last-child>.primary svg,.intro>div:last-child>.secondary svg{display:block!important;width:15px!important;height:15px!important;flex:0 0 15px!important}
       .intro>div:last-child>a[href="/shopping"]{display:none!important}
       .calendar-card,.family-events-board-card,.task-panel,.shopping-board-card{width:100%!important;max-width:100%!important;box-sizing:border-box!important}
       .board-tabs{width:100%!important;min-width:0!important;overflow:visible!important}
@@ -111,7 +129,7 @@ export default function StatusEnhancements(){
     @media(max-width:430px){
       .intro>div:last-child{gap:6px!important}
       .intro>div:last-child>.primary,.intro>div:last-child>.secondary{font-size:11.5px!important;padding:7px 4px!important;gap:4px!important}
-      .intro>div:last-child>.primary svg,.intro>div:last-child>.secondary svg{display:none!important}
+      .intro>div:last-child>.primary svg,.intro>div:last-child>.secondary svg{display:block!important;width:14px!important;height:14px!important;flex:0 0 14px!important}
       .board-tabs>.summary-strip .summary-card{min-height:68px!important;padding:8px 7px!important;border-radius:14px!important}
       .board-tabs>.summary-strip .summary-card strong{font-size:22px!important}
       .board-tabs>.summary-strip .summary-card span{font-size:11px!important}
