@@ -14,8 +14,10 @@ from .database import config, get_db
 from .models import LoginSession, ShoppingItem, Task, User
 from .schemas import LoginInput, ShoppingItemEdit, ShoppingItemInput, ShoppingItemReference, TaskEdit, TaskInput, TaskReference
 from .security import COOKIE, DUMMY_HASH, csrf_token, current_user, hasher, require_origin, require_write, token_hash, verify_password
+from .events import router as events_router
 
 app = FastAPI(title='ביחד — API', version='1.1.0', docs_url=None, redoc_url=None, openapi_url=None)
+app.include_router(events_router)
 
 @app.middleware('http')
 async def private_responses(request: Request, call_next):
