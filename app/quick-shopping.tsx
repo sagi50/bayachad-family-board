@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Check, LoaderCircle, Plus, ShoppingCart, X } from 'lucide-react';
+import { Check, LoaderCircle, Plus, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { apiFetch } from '@/lib/api';
@@ -20,6 +20,8 @@ export default function QuickShopping(){
     const findHost=()=>{
       const addTask=document.querySelector<HTMLButtonElement>('.intro button.primary');
       const parent=addTask?.parentElement;
+      const oldShoppingLink=parent?.querySelector<HTMLAnchorElement>('a[href="/shopping"]');
+      if(oldShoppingLink) oldShoppingLink.style.display='none';
       if(parent) setHost(parent);
     };
     findHost();
